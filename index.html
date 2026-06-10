@@ -10,14 +10,12 @@
     :root { --rosa: #e91e8c; --rosa-claro: #ff6ec7; --morado: #7b2d8b; --crema: #fff8f9; --texto: #2a2a2a; }
     body { font-family: 'Nunito', sans-serif; background-color: var(--crema); color: var(--texto); padding-bottom: 40px; }
     header { background: linear-gradient(135deg, var(--morado), var(--rosa)); color: white; text-align: center; padding: 40px 20px 30px; position: relative; overflow: hidden; }
-    header::before { content: '💅'; font-size: 100px; position: absolute; opacity: 0.08; top: -10px; right: -10px; }
-    header .logo { font-size: 3rem; margin-bottom: 6px; }
     header h1 { font-family: 'Playfair Display', serif; font-size: 2.4rem; letter-spacing: 2px; }
     header p { font-size: 1rem; margin-top: 6px; opacity: 0.9; }
     header .subtitulo { font-size: 0.9rem; margin-top: 8px; opacity: 0.8; }
     .seccion { max-width: 700px; margin: 30px auto; padding: 0 20px; }
     .seccion-titulo { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--morado); text-align: center; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .servicios { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+    .servicios { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
     .servicio { background: white; border-radius: 16px; padding: 20px 14px; text-align: center; box-shadow: 0 2px 12px rgba(233,30,140,0.1); border: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
     .servicio:hover, .servicio.seleccionado { border-color: var(--rosa); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(233,30,140,0.2); }
     .servicio.seleccionado { background: #fff0f8; }
@@ -71,13 +69,21 @@
   <div class="seccion">
     <div class="seccion-titulo">💆 Nuestros Servicios</div>
     <div class="servicios">
-     <div class="servicio" onclick="seleccionarServicio(this, 'Uñas Acrílicas', 60000)">
-        <span class="icono">💅</span><div class="nombre">Uñas Acrílicas</div><div class="desc">Extensión completa con diseño</div><div class="precio">$60.000</div>
-      <div class="servicio" onclick="seleccionarServicio(this, 'Uñas en Gel', 55000)">
-        <span class="icono">✨</span><div class="nombre">Uñas en Gel</div><div class="desc">Larga duración y brillo natural</div><div class="precio">Desde $55.000</div>
+      <div class="servicio" onclick="seleccionarServicio(this, 'Uñas Acrílicas', 75000)">
+        <span class="icono">💅</span><div class="nombre">Uñas Acrílicas</div><div class="desc">Extensión completa con diseño</div><div class="precio">$75.000</div>
       </div>
-      <div class="servicio" onclick="seleccionarServicio(this, 'Uñas Tradicionales Pies', 15000)">
+      <div class="servicio" onclick="seleccionarServicio(this, 'Uñas en Gel', 60000)">
+        <span class="icono">✨</span><div class="nombre">Uñas en Gel</div><div class="desc">Larga duración y brillo natural</div><div class="precio">$60.000</div>
+      </div>
+      <div class="servicio" onclick="seleccionarServicio(this, 'Tradicional Pies', 15000)">
         <span class="icono">🦶</span><div class="nombre">Tradicional Pies</div><div class="desc">Esmaltado clásico pies</div><div class="precio">$15.000</div>
+      </div>
+      <div class="servicio" onclick="seleccionarServicio(this, 'Tradicional Manos', 13000)">
+        <span class="icono">🙌</span><div class="nombre">Tradicional Manos</div><div class="desc">Esmaltado clásico manos</div><div class="precio">$13.000</div>
+      </div>
+      <div class="servicio" onclick="seleccionarServicio(this, 'Keratina', 0)">
+        <span class="icono">💆</span><div class="nombre">Keratina</div><div class="desc">Precio según tipo de cabello</div><div class="precio">Consultar</div>
+      </div>
     </div>
   </div>
   <div class="seccion">
@@ -215,12 +221,13 @@
       sec.style.display = 'block';
       const total = pedido.precioServicio + pedido.precioDiseno;
       let html = '';
-      if (pedido.servicio) html += '<div class="resumen-item"><span>💅 Servicio</span><span>' + pedido.servicio + ' - $' + pedido.precioServicio.toLocaleString('es-CO') + '</span></div>';
+      if (pedido.servicio) html += '<div class="resumen-item"><span>💅 Servicio</span><span>' + pedido.servicio + (pedido.precioServicio > 0 ? ' - $' + pedido.precioServicio.toLocaleString('es-CO') : ' - Consultar') + '</span></div>';
       if (pedido.diseno) html += '<div class="resumen-item"><span>🎨 Diseño</span><span>' + pedido.diseno + (pedido.precioDiseno > 0 ? ' +$' + pedido.precioDiseno.toLocaleString('es-CO') : ' - Incluido') + '</span></div>';
       if (pedido.color) html += '<div class="resumen-item"><span>🎨 Color</span><span>' + pedido.color + '</span></div>';
       if (pedido.fecha) html += '<div class="resumen-item"><span>📅 Fecha</span><span>' + pedido.fecha + '</span></div>';
       if (pedido.hora) html += '<div class="resumen-item"><span>⏰ Hora</span><span>' + pedido.hora + '</span></div>';
-      html += '<div class="resumen-total">Total: $' + total.toLocaleString('es-CO') + '</div>';
+      if (total > 0) html += '<div class="resumen-total">Total: $' + total.toLocaleString('es-CO') + '</div>';
+      else html += '<div class="resumen-total">Total: A confirmar</div>';
       cont.innerHTML = html;
       if (pedido.servicio && pedido.fecha && pedido.hora) form.style.display = 'block';
     }
@@ -240,7 +247,8 @@
       if (pedido.color) msg += '🎨 *Color:* ' + pedido.color + '\n';
       msg += '📅 *Fecha:* ' + pedido.fecha + '\n';
       msg += '⏰ *Hora:* ' + pedido.hora + '\n';
-      msg += '💰 *Total:* $' + total.toLocaleString('es-CO') + '\n';
+      if (total > 0) msg += '💰 *Total:* $' + total.toLocaleString('es-CO') + '\n';
+      else msg += '💰 *Total:* A confirmar según tipo de cabello\n';
       if (notas) msg += '📝 *Notas:* ' + notas + '\n';
       window.open('https://wa.me/573194331506?text=' + encodeURIComponent(msg), '_blank');
     }
