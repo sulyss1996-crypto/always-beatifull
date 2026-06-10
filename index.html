@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Always Beautiful - Suly Andrea</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Nunito:wght@400;600;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --rosa: #e91e8c; --rosa-claro: #ff6ec7; --morado: #7b2d8b; --crema: #fff8f9; --texto: #2a2a2a; }
+    body { font-family: 'Nunito', sans-serif; background-color: var(--crema); color: var(--texto); padding-bottom: 40px; }
+    header { background: linear-gradient(135deg, var(--morado), var(--rosa)); color: white; text-align: center; padding: 40px 20px 30px; position: relative; overflow: hidden; }
+    header::before { content: '💅'; font-size: 100px; position: absolute; opacity: 0.08; top: -10px; right: -10px; }
+    header .logo { font-size: 3rem; margin-bottom: 6px; }
+    header h1 { font-family: 'Playfair Display', serif; font-size: 2.4rem; letter-spacing: 2px; }
+    header p { font-size: 1rem; margin-top: 6px; opacity: 0.9; }
+    header .subtitulo { font-size: 0.9rem; margin-top: 8px; opacity: 0.8; }
+    .seccion { max-width: 700px; margin: 30px auto; padding: 0 20px; }
+    .seccion-titulo { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--morado); text-align: center; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .servicios { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+    .servicio { background: white; border-radius: 16px; padding: 20px 14px; text-align: center; box-shadow: 0 2px 12px rgba(233,30,140,0.1); border: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
+    .servicio:hover, .servicio.seleccionado { border-color: var(--rosa); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(233,30,140,0.2); }
+    .servicio.seleccionado { background: #fff0f8; }
+    .servicio .icono { font-size: 2.5rem; margin-bottom: 8px; display: block; }
+    .servicio .nombre { font-weight: 700; font-size: 1rem; color: var(--morado); margin-bottom: 4px; }
+    .servicio .precio { font-size: 1.1rem; color: var(--rosa); font-weight: 700; }
+    .servicio .desc { font-size: 0.78rem; color: #888; margin-bottom: 6px; }
+    .disenos { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+    .diseno { background: white; border-radius: 12px; padding: 14px 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.07); border: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
+    .diseno:hover, .diseno.seleccionado { border-color: var(--rosa); background: #fff0f8; }
+    .diseno .icono { font-size: 2rem; display: block; margin-bottom: 6px; }
+    .diseno .nombre { font-size: 0.85rem; font-weight: 700; color: var(--morado); }
+    .diseno .precio-extra { font-size: 0.75rem; color: var(--rosa); }
+    .colores { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .color-btn { width: 44px; height: 44px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; transition: all 0.2s; position: relative; }
+    .color-btn:hover, .color-btn.seleccionado { border-color: var(--morado); transform: scale(1.2); }
+    .color-btn.seleccionado::after { content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: 700; font-size: 0.9rem; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+    .calendario { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .cal-nav button { background: var(--rosa); color: white; border: none; border-radius: 8px; padding: 6px 14px; cursor: pointer; font-size: 1rem; }
+    .cal-nav span { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--morado); font-weight: 700; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+    .cal-dia-nombre { font-size: 0.75rem; font-weight: 700; color: #999; padding: 4px 0; }
+    .cal-dia { padding: 8px 4px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+    .cal-dia.disponible:hover, .cal-dia.seleccionado-dia { background: var(--rosa); color: white; }
+    .cal-dia.no-disponible { color: #ccc; cursor: not-allowed; }
+    .cal-dia.hoy { border: 2px solid var(--rosa); color: var(--rosa); font-weight: 700; }
+    .cal-dia.seleccionado-dia { background: var(--morado); color: white; }
+    .horarios { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .hora-btn { padding: 8px 16px; border-radius: 20px; border: 2px solid var(--rosa); background: white; color: var(--rosa); font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: 'Nunito', sans-serif; }
+    .hora-btn:hover, .hora-btn.seleccionado { background: var(--rosa); color: white; }
+    .resumen { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px rgba(233,30,140,0.1); border-left: 4px solid var(--rosa); }
+    .resumen-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.95rem; }
+    .resumen-total { font-weight: 700; font-size: 1.2rem; color: var(--morado); text-align: right; margin-top: 10px; }
+    .form-grupo { margin-bottom: 14px; }
+    .form-grupo label { display: block; font-weight: 700; font-size: 0.9rem; color: var(--morado); margin-bottom: 6px; }
+    .form-grupo input, .form-grupo textarea { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 10px; font-size: 1rem; font-family: 'Nunito', sans-serif; transition: border 0.2s; }
+    .form-grupo input:focus, .form-grupo textarea:focus { outline: none; border-color: var(--rosa); }
+    .btn-reservar { display: block; width: 100%; background: linear-gradient(135deg, var(--morado), var(--rosa)); color: white; border: none; font-family: 'Playfair Display', serif; font-size: 1.2rem; padding: 16px; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(233,30,140,0.3); transition: all 0.2s; margin-top: 10px; }
+    .btn-reservar:hover { transform: translateY(-2px); }
+    footer { background: linear-gradient(135deg, var(--morado), var(--rosa)); color: white; text-align: center; padding: 20px; margin-top: 30px; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">💅</div>
+    <h1>Always Beautiful</h1>
+    <p>Servicios de belleza a domicilio</p>
+    <div class="subtitulo">✨ Suly Andrea Saldarriaga · Maceo, Antioquia</div>
+  </header>
+  <div class="seccion">
+    <div class="seccion-titulo">💆 Nuestros Servicios</div>
+    <div class="servicios">
+      <div class="servicio" onclick="seleccionarServicio(this, 'Uñas Acrílicas', 60000)">
+        <span class="icono">💅</span><div class="nombre">Uñas Acrílicas</div><div class="desc">Extensión completa con diseño</div><div class="precio">Desde $60.000</div>
+      </div>
+      <div class="servicio" onclick="seleccionarServicio(this, 'Uñas en Gel', 55000)">
+        <span class="icono">✨</span><div class="nombre">Uñas en Gel</div><div class="desc">Larga duración y brillo natural</div><div class="precio">Desde $55.000</div>
+      </div>
+      <div class="servicio" onclick="seleccionarServicio(this, 'Uñas Tradicionales', 30000)">
+        <span class="icono">🌸</span><div class="nombre">Uñas Tradicionales</div><div class="desc">Manicure clásico con esmaltado</div><div class="precio">Desde $30.000</div>
+      </div>
+    </div>
+  </div>
+  <div class="seccion">
+    <div class="seccion-titulo">🎨 Elige tu Diseño</div>
+    <div class="disenos">
+      <div class="diseno" onclick="seleccionarDiseno(this, 'Liso', 0)"><span class="icono">💗</span><div class="nombre">Liso</div><div class="precio-extra">Incluido</div></div>
+      <div class="diseno" onclick="seleccionarDiseno(this, 'Francés', 10000)"><span class="icono">🤍</span><div class="nombre">Francés</div><div class="precio-extra">+$10.000</div></div>
+      <div class="diseno" onclick="seleccionarDiseno(this, 'Mármol', 15000)"><span class="icono">🪨</span><div class="nombre">Mármol</div><div class="precio-extra">+$15.000</div></div>
+      <div class="diseno" onclick="seleccionarDiseno(this, 'Glitter', 12000)"><span class="icono">✨</span><div class="nombre">Glitter</div><div class="precio-extra">+$12.000</div></div>
+      <div class="diseno" onclick="seleccionarDiseno(this, 'Flores', 15000)"><span class="icono">🌺</span><div class="nombre">Flores</div><div class="precio-extra">+$15.000</div></div>
+      <div class="diseno" onclick="seleccionarDiseno(this, 'Degradado', 12000)"><span class="icono">🌈</span><div class="nombre">Degradado</div><div class="precio-extra">+$12.000</div></div>
+      <div class="diseno" onclick="seleccionarDiseno(this, 'Geométrico', 15000)"><span class="icono">🔷</span><div class="nombre">Geométrico</div><div class="precio-extra">+$15.000</div></div>
+      <div class="diseno" onclick="seleccionarDiseno(this, 'Personalizado', 20000)"><span class="icono">🎭</span><div class="nombre">Personalizado</div><div class="precio-extra">+$20.000</div></div>
+    </div>
+  </div>
+  <div class="seccion">
+    <div class="seccion-titulo">🎨 Elige tu Color</div>
+    <div class="colores">
+      <div class="color-btn" style="background:#ff6b9d" onclick="seleccionarColor(this, 'Rosa fucsia')" title="Rosa fucsia"></div>
+      <div class="color-btn" style="background:#ff0000" onclick="seleccionarColor(this, 'Rojo')" title="Rojo"></div>
+      <div class="color-btn" style="background:#ff69b4" onclick="seleccionarColor(this, 'Rosa pastel')" title="Rosa pastel"></div>
+      <div class="color-btn" style="background:#ffffff;border:2px solid #ddd" onclick="seleccionarColor(this, 'Blanco')" title="Blanco"></div>
+      <div class="color-btn" style="background:#000000" onclick="seleccionarColor(this, 'Negro')" title="Negro"></div>
+      <div class="color-btn" style="background:#800080" onclick="seleccionarColor(this, 'Morado')" title="Morado"></div>
+      <div class="color-btn" style="background:#0000ff" onclick="seleccionarColor(this, 'Azul')" title="Azul"></div>
+      <div class="color-btn" style="background:#87ceeb" onclick="seleccionarColor(this, 'Azul cielo')" title="Azul cielo"></div>
+      <div class="color-btn" style="background:#ff8c00" onclick="seleccionarColor(this, 'Naranja')" title="Naranja"></div>
+      <div class="color-btn" style="background:#ffd700" onclick="seleccionarColor(this, 'Dorado')" title="Dorado"></div>
+      <div class="color-btn" style="background:#c0c0c0" onclick="seleccionarColor(this, 'Plateado')" title="Plateado"></div>
+      <div class="color-btn" style="background:#8b4513" onclick="seleccionarColor(this, 'Café')" title="Café"></div>
+    </div>
+  </div>
+  <div class="seccion">
+    <div class="seccion-titulo">📅 Agenda tu Cita</div>
+    <div class="calendario">
+      <div class="cal-nav">
+        <button onclick="cambiarMes(-1)">◀</button>
+        <span id="mesActual"></span>
+        <button onclick="cambiarMes(1)">▶</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div id="horariosSeccion" style="display:none">
+        <div style="margin-top:16px;font-weight:700;color:var(--morado)">⏰ Horarios disponibles:</div>
+        <div class="horarios" id="horariosContainer"></div>
+      </div>
+    </div>
+  </div>
+  <div class="seccion" id="resumenSeccion" style="display:none">
+    <div class="seccion-titulo">📋 Tu Reserva</div>
+    <div class="resumen" id="resumenContenido"></div>
+  </div>
+  <div class="seccion" id="formularioSeccion" style="display:none">
+    <div class="seccion-titulo">👤 Tus Datos</div>
+    <div class="form-grupo"><label>Tu nombre completo</label><input type="text" id="clienteNombre" placeholder="Ej: María García"></div>
+    <div class="form-grupo"><label>Tu dirección en Maceo</label><input type="text" id="clienteDireccion" placeholder="Ej: Calle 5 #10-20, Maceo"></div>
+    <div class="form-grupo"><label>Tu WhatsApp</label><input type="text" id="clienteWhatsapp" placeholder="Ej: 3001234567"></div>
+    <div class="form-grupo"><label>Notas adicionales (opcional)</label><textarea id="clienteNotas" rows="2" placeholder="Algún detalle especial..."></textarea></div>
+    <button class="btn-reservar" onclick="enviarReserva()">💅 Confirmar Cita por WhatsApp</button>
+  </div>
+  <footer>
+    💅 Always Beautiful · Suly Andrea Saldarriaga<br>
+    📱 319 433 1506 · Servicios a domicilio en Maceo, Antioquia<br>
+    <small>Lunes a Viernes · 1:00 PM - 5:00 PM</small>
+  </footer>
+  <script>
+    let pedido = { servicio: null, precioServicio: 0, diseno: null, precioDiseno: 0, color: null, fecha: null, hora: null };
+    let mesActual = new Date().getMonth();
+    let anioActual = new Date().getFullYear();
+    const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const horasDisponibles = ['1:00 PM','1:30 PM','2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM','4:30 PM'];
+    function seleccionarServicio(el, nombre, precio) {
+      document.querySelectorAll('.servicio').forEach(s => s.classList.remove('seleccionado'));
+      el.classList.add('seleccionado'); pedido.servicio = nombre; pedido.precioServicio = precio; actualizarResumen();
+    }
+    function seleccionarDiseno(el, nombre, precio) {
+      document.querySelectorAll('.diseno').forEach(s => s.classList.remove('seleccionado'));
+      el.classList.add('seleccionado'); pedido.diseno = nombre; pedido.precioDiseno = precio; actualizarResumen();
+    }
+    function seleccionarColor(el, nombre) {
+      document.querySelectorAll('.color-btn').forEach(s => s.classList.remove('seleccionado'));
+      el.classList.add('seleccionado'); pedido.color = nombre; actualizarResumen();
+    }
+    function cambiarMes(delta) {
+      mesActual += delta;
+      if (mesActual > 11) { mesActual = 0; anioActual++; }
+      if (mesActual < 0) { mesActual = 11; anioActual--; }
+      renderCalendario();
+    }
+    function renderCalendario() {
+      document.getElementById('mesActual').textContent = meses[mesActual] + ' ' + anioActual;
+      const grid = document.getElementById('calGrid');
+      grid.innerHTML = '';
+      ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].forEach(d => {
+        const el = document.createElement('div'); el.className = 'cal-dia-nombre'; el.textContent = d; grid.appendChild(el);
+      });
+      const primerDia = new Date(anioActual, mesActual, 1).getDay();
+      const diasMes = new Date(anioActual, mesActual + 1, 0).getDate();
+      const hoy = new Date();
+      for (let i = 0; i < primerDia; i++) { const el = document.createElement('div'); grid.appendChild(el); }
+      for (let d = 1; d <= diasMes; d++) {
+        const el = document.createElement('div'); el.className = 'cal-dia'; el.textContent = d;
+        const fecha = new Date(anioActual, mesActual, d);
+        const diaSemana = fecha.getDay();
+        const esHoy = fecha.toDateString() === hoy.toDateString();
+        if (esHoy) el.classList.add('hoy');
+        if (diaSemana === 0 || diaSemana === 6 || fecha < hoy) { el.classList.add('no-disponible'); }
+        else { el.classList.add('disponible'); el.onclick = () => seleccionarDia(el, d); }
+        grid.appendChild(el);
+      }
+    }
+    function seleccionarDia(el, dia) {
+      document.querySelectorAll('.cal-dia').forEach(d => d.classList.remove('seleccionado-dia'));
+      el.classList.add('seleccionado-dia');
+      pedido.fecha = dia + ' de ' + meses[mesActual] + ' ' + anioActual; pedido.hora = null;
+      mostrarHorarios(); actualizarResumen();
+    }
+    function mostrarHorarios() {
+      const sec = document.getElementById('horariosSeccion');
+      const cont = document.getElementById('horariosContainer');
+      sec.style.display = 'block'; cont.innerHTML = '';
+      horasDisponibles.forEach(hora => {
+        const btn = document.createElement('button'); btn.className = 'hora-btn'; btn.textContent = hora;
+        btn.onclick = () => seleccionarHora(btn, hora); cont.appendChild(btn);
+      });
+    }
+    function seleccionarHora(el, hora) {
+      document.querySelectorAll('.hora-btn').forEach(b => b.classList.remove('seleccionado'));
+      el.classList.add('seleccionado'); pedido.hora = hora; actualizarResumen();
+    }
+    function actualizarResumen() {
+      const sec = document.getElementById('resumenSeccion');
+      const form = document.getElementById('formularioSeccion');
+      const cont = document.getElementById('resumenContenido');
+      if (!pedido.servicio) { sec.style.display = 'none'; form.style.display = 'none'; return; }
+      sec.style.display = 'block';
+      const total = pedido.precioServicio + pedido.precioDiseno;
+      let html = '';
+      if (pedido.servicio) html += '<div class="resumen-item"><span>💅 Servicio</span><span>' + pedido.servicio + ' - $' + pedido.precioServicio.toLocaleString('es-CO') + '</span></div>';
+      if (pedido.diseno) html += '<div class="resumen-item"><span>🎨 Diseño</span><span>' + pedido.diseno + (pedido.precioDiseno > 0 ? ' +$' + pedido.precioDiseno.toLocaleString('es-CO') : ' - Incluido') + '</span></div>';
+      if (pedido.color) html += '<div class="resumen-item"><span>🎨 Color</span><span>' + pedido.color + '</span></div>';
+      if (pedido.fecha) html += '<div class="resumen-item"><span>📅 Fecha</span><span>' + pedido.fecha + '</span></div>';
+      if (pedido.hora) html += '<div class="resumen-item"><span>⏰ Hora</span><span>' + pedido.hora + '</span></div>';
+      html += '<div class="resumen-total">Total: $' + total.toLocaleString('es-CO') + '</div>';
+      cont.innerHTML = html;
+      if (pedido.servicio && pedido.fecha && pedido.hora) form.style.display = 'block';
+    }
+    function enviarReserva() {
+      const nombre = document.getElementById('clienteNombre').value.trim();
+      const direccion = document.getElementById('clienteDireccion').value.trim();
+      const whatsapp = document.getElementById('clienteWhatsapp').value.trim();
+      const notas = document.getElementById('clienteNotas').value.trim();
+      if (!nombre || !direccion || !whatsapp) { alert('Por favor completa tu nombre, dirección y WhatsApp'); return; }
+      const total = pedido.precioServicio + pedido.precioDiseno;
+      let msg = '¡Hola Suly! 💅 Quiero agendar una cita:\n\n';
+      msg += '👤 *Nombre:* ' + nombre + '\n';
+      msg += '📍 *Dirección:* ' + direccion + '\n';
+      msg += '📱 *WhatsApp:* ' + whatsapp + '\n\n';
+      msg += '💅 *Servicio:* ' + pedido.servicio + '\n';
+      if (pedido.diseno) msg += '🎨 *Diseño:* ' + pedido.diseno + '\n';
+      if (pedido.color) msg += '🎨 *Color:* ' + pedido.color + '\n';
+      msg += '📅 *Fecha:* ' + pedido.fecha + '\n';
+      msg += '⏰ *Hora:* ' + pedido.hora + '\n';
+      msg += '💰 *Total:* $' + total.toLocaleString('es-CO') + '\n';
+      if (notas) msg += '📝 *Notas:* ' + notas + '\n';
+      window.open('https://wa.me/573194331506?text=' + encodeURIComponent(msg), '_blank');
+    }
+    renderCalendario();
+  </script>
+</body>
+</html>
