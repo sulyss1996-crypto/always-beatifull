@@ -2,207 +2,90 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Catálogo - Always Beautiful Studio</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      background-color: #f4f7f6;
-      color: #333;
-      padding: 12px;
-    }
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .header h1 {
-      color: #00bcd4;
-      font-size: 24px;
-    }
-
-    /* Contenedor de Filtros/Categorías */
-    .categories-bar {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-      margin-bottom: 15px;
-    }
-    .cat-chip {
-      background: #e0e0e0;
-      color: #555;
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: bold;
-      white-space: nowrap;
-      border: none;
-      cursor: pointer;
-    }
-    .cat-chip.active {
-      background: #00bcd4;
-      color: #fff;
-    }
-
-    .category-title {
-      font-size: 16px;
-      color: #00838f;
-      border-bottom: 2px solid #00bcd4;
-      padding-bottom: 4px;
-      margin: 20px 0 12px 0;
-    }
-
-    /* Grilla de Diseños */
-    .grid-designs {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-
-    @media (min-width: 600px) {
-      .grid-designs {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      }
-    }
-
-    /* Tarjeta de Cada Diseño */
-    .card-design {
-      border: 1px solid #eee;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      text-align: center;
-      padding-bottom: 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    /* Ajuste correcto de la foto para que no se deforme */
-    .card-design img {
-      width: 100%;
-      height: 170px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .card-design h4 {
-      font-size: 14px;
-      margin: 8px 6px 2px 6px;
-      color: #333;
-    }
-
-    .card-design .price {
-      color: #00bcd4;
-      font-weight: bold;
-      font-size: 15px;
-      margin-bottom: 8px;
-    }
-
-    .btn-agendar {
-      background-color: #25d366;
-      color: #fff;
-      border: none;
-      padding: 8px 10px;
-      font-size: 12px;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      margin: 0 8px;
-      text-decoration: none;
-      display: block;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Always Beautiful - Agenda tu Cita</title>
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- SDK de Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-  <div class="header">
-    <h1>✨ Catálogo de Servicios ✨</h1>
-  </div>
+  <header>
+    <h1>Always Beautiful</h1>
+    <p>Realza tu belleza con nuestros servicios profesionales</p>
+  </header>
 
-  <!-- Barra de Filtros por Categoría -->
-  <div class="categories-bar" id="categories-bar">
-    <button class="cat-chip active" onclick="filterCategory('todas', this)">Todas</button>
-  </div>
+  <main>
+    <!-- SECCIÓN DE SERVICIOS -->
+    <section id="servicios">
+      <h2>Nuestros Servicios</h2>
+      <div class="servicios-grid" id="serviciosContainer">
+        <!-- Las tarjetas se cargan desde el sistema o se muestran fijas -->
+        <div class="card">
+          <h3>Keratinas</h3>
+          <p>Tratamiento alisador y restaurador profundo.</p>
+          <p class="precio">$80.000</p>
+          <a href="#booking" class="btn-agendar">Elegir Fecha y Hora</a>
+        </div>
+        <div class="card">
+          <h3>Uñas y Manicura</h3>
+          <p>Diseño y cuidado profesional para tus manos.</p>
+          <p class="precio">$35.000</p>
+          <a href="#booking" class="btn-agendar">Elegir Fecha y Hora</a>
+        </div>
+      </div>
+    </section>
 
-  <!-- Catálogo de Productos -->
-  <div id="client-catalog"></div>
+    <!-- SECCIÓN DE AGENDAMIENTO Y CALENDARIO -->
+    <section id="booking" class="booking-section">
+      <h2>Agendar Cita</h2>
+      <p>Selecciona una fecha para ver las horas disponibles:</p>
 
-  <script>
-    let activeCategory = 'todas';
+      <form id="bookingForm">
+        <div class="form-group">
+          <label for="fechaCita">1. Selecciona la Fecha:</label>
+          <input type="date" id="fechaCita" required>
+        </div>
 
-    function renderClientCatalog() {
-      const categories = JSON.parse(localStorage.getItem('ab_categories')) || [];
-      const designs = JSON.parse(localStorage.getItem('ab_designs')) || [];
-      
-      const barContainer = document.getElementById('categories-bar');
-      const catalogContainer = document.getElementById('client-catalog');
+        <div class="form-group">
+          <label>2. Horarios Disponibles:</label>
+          <div id="horariosContainer" class="horarios-grid">
+            <p class="info-text">Por favor selecciona una fecha primero.</p>
+          </div>
+          <input type="hidden" id="horaSeleccionada" required>
+        </div>
 
-      // 1. Renderizar Barra de Filtros
-      barContainer.innerHTML = `<button class="cat-chip ${activeCategory === 'todas' ? 'active' : ''}" onclick="filterCategory('todas', this)">Todas</button>`;
-      categories.forEach(cat => {
-        barContainer.innerHTML += `
-          <button class="cat-chip ${activeCategory === cat ? 'active' : ''}" onclick="filterCategory('${cat}', this)">${cat}</button>
-        `;
-      });
+        <div class="form-group">
+          <label for="servicioSeleccionado">3. Selecciona el Servicio:</label>
+          <select id="servicioSeleccionado" required>
+            <option value="">-- Cargar Servicios --</option>
+            <option value="Keratinas ($80.000)">Keratinas ($80.000)</option>
+            <option value="Uñas y Manicura ($35.000)">Uñas y Manicura ($35.000)</option>
+          </select>
+        </div>
 
-      // 2. Renderizar Diseños
-      catalogContainer.innerHTML = '';
+        <div class="form-group">
+          <label for="nombreCliente">Nombre Completo:</label>
+          <input type="text" id="nombreCliente" placeholder="Tu nombre" required>
+        </div>
 
-      if (designs.length === 0) {
-        catalogContainer.innerHTML = '<p style="text-align: center; color: #999; padding: 30px;">No hay fotos disponibles en el catálogo.</p>';
-        return;
-      }
+        <div class="form-group">
+          <label for="telefonoCliente">Teléfono (WhatsApp):</label>
+          <input type="tel" id="telefonoCliente" placeholder="Ej: 3001234567" required>
+        </div>
 
-      const categoriesToDisplay = activeCategory === 'todas' ? categories : [activeCategory];
+        <button type="submit" id="btnConfirmar" class="btn-submit">Confirmar Cita por WhatsApp</button>
+      </form>
+    </section>
+  </main>
 
-      categoriesToDisplay.forEach(cat => {
-        const catDesigns = designs.filter(d => d.category === cat);
+  <footer>
+    <p>&copy; Always Beautiful - Todos los derechos reservados</p>
+    <a href="admin.html" style="color: #bbb; font-size: 0.8rem;">Acceso Administrador</a>
+  </footer>
 
-        if (catDesigns.length > 0) {
-          let html = `<h3 class="category-title">📁 ${cat}</h3><div class="grid-designs">`;
-          
-          catDesigns.forEach(d => {
-            // Mensaje de WhatsApp listo para agendar
-            const msg = encodeURIComponent(`Hola! Quiero agendar una cita para el diseño "${d.title}" ($${Number(d.price).toLocaleString('es-CO')}).`);
-            const whatsappUrl = `https://wa.me/573194331506?text=${msg}`;
-
-            html += `
-              <div class="card-design">
-                <div>
-                  <img src="${d.image}" alt="${d.title}">
-                  <h4>${d.title}</h4>
-                  <div class="price">$${Number(d.price).toLocaleString('es-CO')}</div>
-                </div>
-                <a href="${whatsappUrl}" target="_blank" class="btn-agendar">📅 Agendar Cita</a>
-              </div>
-            `;
-          });
-
-          html += `</div>`;
-          catalogContainer.innerHTML += html;
-        }
-      });
-    }
-
-    function filterCategory(cat, btn) {
-      activeCategory = cat;
-      document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderClientCatalog();
-    }
-
-    // Inicializar al cargar
-    document.addEventListener('DOMContentLoaded', renderClientCatalog);
-
-    // Actualizar solo si hay cambios en el Panel Administrador
-    window.addEventListener('storage', renderClientCatalog);
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
