@@ -3,86 +3,67 @@ import {
   getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, deleteDoc, doc 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ==========================================
-// 🔑 CONFIGURACIÓN DE FIREBASE
-// Reemplaza los datos de abajo por los de tu pantalla de Firebase Console
-// ==========================================
 const firebaseConfig = {
-  apiKey: "AIzaSyDSBd54HRqapxCdoLXBComoAaNyJ31l97U",
-  authDomain: "always-beautiful-ebc5c.firebaseapp.com",
-  projectId: "always-beautiful-ebc5c",
-  storageBucket: "always-beautiful-ebc5c.firebasestorage.app",
-  messagingSenderId: "768953502101",
-  appId: "1:768953502101:web:20924257462f261e984e9c",
-  measurementId: "G-VP92MHFRE4"
+  apiKey: "TU_API_KEY_AQUI",
+  authDomain: "always-beautiful.firebaseapp.com",
+  projectId: "always-beautiful",
+  storageBucket: "always-beautiful.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef"
 };
 
-// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Número de WhatsApp donde llegarán las reservas (Formato Internacional)
-const WHATSAPP_ADMIN = "573194331506"; // Reemplaza con el número de tu esposa
-
-// Lista de Horarios Disponibles por Día
 const HORARIOS_BASE = [
-   "09:00 AM", "11:00 AM", 
-  "02:00 PM", "03:30 PM", "05:00 PM", "06:00 PM"
+  "08:00 AM", "09:30 AM", "11:00 AM", 
+  "02:00 PM", "03:30 PM", "05:00 PM", "06:30 PM"
 ];
 
-// ==========================================
-// 🚀 INICIALIZACIÓN DE LA PÁGINA
-// ==========================================
+const WHATSAPP_ADMIN = "573194331506"; // Tu número registrado
+
 document.addEventListener('DOMContentLoaded', () => {
   const fechaInput = document.getElementById('fechaCita');
   
   if (fechaInput) {
-    // Bloquear fechas pasadas en el calendario
     const hoy = new Date().toISOString().split('T')[0];
     fechaInput.min = hoy;
 
-    // Escuchar cambios de fecha para actualizar las horas disponibles
     fechaInput.addEventListener('change', async (e) => {
       await cargarHorariosDisponibles(e.target.value);
     });
 
-    // Guardar cita desde el formulario del cliente
     const formCita = document.getElementById('form-cita');
     if (formCita) {
       formCita.addEventListener('submit', guardarCita);
     }
   }
 
-  // Cargar catálogo de servicios si estamos en index.html
   if (document.getElementById('galeria-servicios')) {
     escucharServicios();
   }
 
-  // Cargar panel de administración si estamos en admin.html
   if (document.getElementById('lista-citas-admin')) {
     escucharCitasAdmin();
     
     const formServicio = document.getElementById('form-nuevo-servicio');
-    if (formServicio) {
-      formServicio.addEventListener('submit', publicarServicio);
-    }
+    if (formServicio) formServicio.addEventListener('submit', publicarServicio);
   }
 });
 
-// ==========================================
-// 📅 1. CONSULTAR Y BLOQUEAR HORAS OCUPADAS (CLIENTAS)
-// ==========================================
 async function cargarHorariosDisponibles(fecha) {
   const selectHora = document.getElementById('horaCita');
-  selectHora.innerHTML = '<option value="">Buscando horas disponibles...</option>';
+  if (!selectHora) return;
+  
+  selectHora.innerHTML = '<option value="">Cargando horarios...</option>';
 
   try {
     const q = query(collection(db, "citas"), where("fecha", "==", fecha));
     const querySnapshot = await getDocs(q);
     
     const horasReservadas = [];
-    querySnapshot.forEach(docSnap => {
-      horasReservadas.push(docSnap.data().hora);
+    querySnapshot.forEach(doc => {
+      horasReservadas.push(doc.data().hora);
     });
 
     selectHora.innerHTML = '<option value="">-- Selecciona una Hora --</option>';
@@ -91,7 +72,7 @@ async function cargarHorariosDisponibles(fecha) {
       const option = document.createElement('option');
       option.value = hora;
       if (horasReservadas.includes(hora)) {
-        option.textContent = `${hora} ❌ (Ocupado)`;
+        option.textContent = `${hora} ❌ (Reservado)`;
         option.disabled = true;
       } else {
         option.textContent = `${hora} ✅ (Disponible)`;
@@ -99,14 +80,10 @@ async function cargarHorariosDisponibles(fecha) {
       selectHora.appendChild(option);
     });
   } catch (error) {
-    console.error("Error consultando la base de datos:", error);
-    selectHora.innerHTML = '<option value="">Error al cargar horas</option>';
+    console.error("Error al obtener horas: ", error);
   }
 }
 
-// ==========================================
-// 📱 2. REGISTRAR CITA Y REDIRIGIR A WHATSAPP
-// ==========================================
 async function guardarCita(e) {
   e.preventDefault();
 
@@ -136,14 +113,10 @@ async function guardarCita(e) {
     alert("¡Cita reservada con éxito! Te estamos redirigiendo a WhatsApp para confirmar.");
     document.getElementById('form-cita').reset();
   } catch (error) {
-    console.error("Error guardando cita:", error);
-    alert("Hubo un problema al guardar la cita. Inténtalo de nuevo.");
+    alert("Hubo un error guardando tu cita. Inténtalo de nuevo.");
   }
 }
 
-// ==========================================
-// 👑 3. PANEL DE ADMINISTRADORA (CITAS Y RECORDATORIOS)
-// ==========================================
 function escucharCitasAdmin() {
   const contenedor = document.getElementById('lista-citas-admin');
   const filtroFecha = document.getElementById('filtroFechaAdmin');
@@ -175,7 +148,7 @@ function escucharCitasAdmin() {
         </div>
         <div class="cita-acciones">
           <button class="btn-reminder" onclick="enviarRecordatorio('${cita.nombre}', '${cita.telefono}', '${cita.fecha}', '${cita.hora}', '${cita.servicio}')">
-            🔔 Enviar Recordatorio (1 día antes)
+            🔔 Enviar Recordatorio
           </button>
           <button class="btn-danger" onclick="eliminarCita('${id}')">🗑️ Cancelar Cita</button>
         </div>
@@ -183,25 +156,20 @@ function escucharCitasAdmin() {
       contenedor.appendChild(card);
     });
   });
+
+  if (filtroFecha) {
+    filtroFecha.addEventListener('change', () => {
+      escucharCitasAdmin();
+    });
+  }
 }
 
-// Enviar mensaje de recordatorio por WhatsApp
 window.enviarRecordatorio = function(nombre, telefono, fecha, hora, servicio) {
-  const mensaje = `¡Hola ${nombre}! 💖 Te recordamos tu cita en *Always Beautiful Studio* para mañana *${fecha}* a las *${hora}* para el servicio de *${servicio}*. ¿Nos confirmas tu asistencia? ¡Te esperamos! ✨`;
+  const mensaje = `¡Hola ${nombre}! 💖 Te recordamos tu cita en *Always Beautiful* programada para el día *${fecha}* a las *${hora}* para el servicio de *${servicio}*. ¿Nos confirmas tu asistencia? ¡Te esperamos! ✨`;
   const url = `https://wa.me/57${telefono}?text=${encodeURIComponent(mensaje)}`;
   window.open(url, '_blank');
 };
 
-// Cancelar/Eliminar Cita
-window.eliminarCita = async function(id) {
-  if (confirm("¿Estás segura de cancelar esta cita?")) {
-    await deleteDoc(doc(db, "citas", id));
-  }
-};
-
-// ==========================================
-// 📸 4. GESTIÓN DEL CATÁLOGO DE SERVICIOS
-// ==========================================
 async function publicarServicio(e) {
   e.preventDefault();
   const nuevoServicio = {
@@ -213,23 +181,20 @@ async function publicarServicio(e) {
 
   try {
     await addDoc(collection(db, "servicios"), nuevoServicio);
-    alert("¡Servicio publicado con éxito en el catálogo!");
+    alert("¡Servicio publicado con éxito!");
     document.getElementById('form-nuevo-servicio').reset();
   } catch (error) {
-    console.error("Error al publicar servicio:", error);
+    alert("Error al publicar el servicio.");
   }
 }
 
 function escucharServicios() {
   const galeria = document.getElementById('galeria-servicios');
-  onSnapshot(collection(db, "servicios"), (snapshot) => {
-    galeria.innerHTML = '';
-    
-    if (snapshot.empty) {
-      galeria.innerHTML = '<p>No hay fotos disponibles en el catálogo.</p>';
-      return;
-    }
+  if (!galeria) return;
 
+  onSnapshot(collection(db, "servicios"), (snapshot) => {
+    if (snapshot.empty) return; 
+    galeria.innerHTML = '';
     snapshot.forEach(docSnap => {
       const item = docSnap.data();
       const div = document.createElement('div');
@@ -238,9 +203,19 @@ function escucharServicios() {
         <img src="${item.imagenUrl}" alt="${item.titulo}">
         <h3>${item.titulo}</h3>
         <p class="categoria">${item.categoria}</p>
-        <p class="precio">$${Number(item.precio).toLocaleString('es-CO')} COP</p>
+        <p class="precio">$${Number(item.precio || 0).toLocaleString('es-CO')} COP</p>
       `;
       galeria.appendChild(div);
     });
   });
 }
+
+window.eliminarCita = async function(id) {
+  if (confirm("¿Estás segura de cancelar esta cita?")) {
+    try {
+      await deleteDoc(doc(db, "citas", id));
+    } catch (error) {
+      alert("No se pudo eliminar la cita.");
+    }
+  }
+};
