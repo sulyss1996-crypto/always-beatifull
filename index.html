@@ -3,89 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Always Beautiful - Agenda tu Cita</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Always Beautiful | Salón & Belleza</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   
-  <!-- SDK de Firebase -->
+  <!-- Firebase SDK Compat -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-  <header>
+  <header class="hero-header">
+    <div class="logo-container">
+      <img src="icono.png" alt="Always Beautiful Logo" class="brand-logo">
+    </div>
     <h1>Always Beautiful</h1>
-    <p>Realza tu belleza con nuestros servicios profesionales</p>
+    <p>Resguarda tu esencia - Realza tu belleza</p>
+    <a href="#booking-section" class="btn-primary"><i class="fa-regular fa-calendar-check"></i> Agendar Cita Ahora</a>
   </header>
 
-  <main>
-    <!-- SECCIÓN DE SERVICIOS -->
-    <section id="servicios">
-      <h2>Nuestros Servicios</h2>
-      <div class="servicios-grid" id="serviciosContainer">
-        <!-- Las tarjetas se cargan desde el sistema o se muestran fijas -->
-        <div class="card">
-          <h3>Keratinas</h3>
-          <p>Tratamiento alisador y restaurador profundo.</p>
-          <p class="precio">$80.000</p>
-          <a href="#booking" class="btn-agendar">Elegir Fecha y Hora</a>
-        </div>
-        <div class="card">
-          <h3>Uñas y Manicura</h3>
-          <p>Diseño y cuidado profesional para tus manos.</p>
-          <p class="precio">$35.000</p>
-          <a href="#booking" class="btn-agendar">Elegir Fecha y Hora</a>
+  <main class="container">
+    <!-- CATÁLOGO DE SERVICIOS DINÁMICO -->
+    <section id="servicios" class="services-section">
+      <div class="section-title">
+        <h2>Catálogo de Servicios</h2>
+        <p>Elige tu tratamiento favorito y agenda tu espacio</p>
+      </div>
+      <div class="services-grid" id="galeria-servicios">
+        <!-- Servicio por defecto inicial -->
+        <div class="card-servicio">
+          <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=600&q=80" alt="Keratinas">
+          <h3>Keratinas & Alisado</h3>
+          <p class="categoria">Keratinas (Antes y Después)</p>
+          <p class="precio">$80.000 COP</p>
         </div>
       </div>
     </section>
 
-    <!-- SECCIÓN DE AGENDAMIENTO Y CALENDARIO -->
-    <section id="booking" class="booking-section">
-      <h2>Agendar Cita</h2>
-      <p>Selecciona una fecha para ver las horas disponibles:</p>
+    <!-- SECCIÓN DE AGENDAMIENTO -->
+    <section id="booking-section" class="booking-container">
+      <div class="booking-header">
+        <i class="fa-solid fa-calendar-days booking-icon"></i>
+        <h2>Reserva Tu Cita en Tiempo Real</h2>
+        <p>Selecciona fecha y hora disponible para guardar tu cupo automáticamente.</p>
+      </div>
 
-      <form id="bookingForm">
-        <div class="form-group">
-          <label for="fechaCita">1. Selecciona la Fecha:</label>
+      <form id="form-cita" class="booking-form">
+        <div class="form-step">
+          <label for="fechaCita"><i class="fa-solid fa-calendar"></i> 1. Selecciona la Fecha:</label>
           <input type="date" id="fechaCita" required>
         </div>
 
-        <div class="form-group">
-          <label>2. Horarios Disponibles:</label>
-          <div id="horariosContainer" class="horarios-grid">
-            <p class="info-text">Por favor selecciona una fecha primero.</p>
-          </div>
-          <input type="hidden" id="horaSeleccionada" required>
-        </div>
-
-        <div class="form-group">
-          <label for="servicioSeleccionado">3. Selecciona el Servicio:</label>
-          <select id="servicioSeleccionado" required>
-            <option value="">-- Cargar Servicios --</option>
-            <option value="Keratinas ($80.000)">Keratinas ($80.000)</option>
-            <option value="Uñas y Manicura ($35.000)">Uñas y Manicura ($35.000)</option>
+        <div class="form-step">
+          <label for="horaCita"><i class="fa-solid fa-clock"></i> 2. Horarios Disponibles:</label>
+          <select id="horaCita" required>
+            <option value="">-- Primero selecciona una fecha --</option>
           </select>
         </div>
 
-        <div class="form-group">
-          <label for="nombreCliente">Nombre Completo:</label>
-          <input type="text" id="nombreCliente" placeholder="Tu nombre" required>
+        <div class="form-step">
+          <label for="servicioSeleccionado"><i class="fa-solid fa-sparkles"></i> 3. Selecciona el Servicio:</label>
+          <select id="servicioSeleccionado" required>
+            <option value="">-- Selecciona un Servicio --</option>
+            <option value="Keratinas ($80.000)">Keratinas ($80.000)</option>
+            <option value="Uñas y Manicura ($35.000)">Uñas y Manicura ($35.000)</option>
+            <option value="Pestañas y Cejas ($45.000)">Pestañas y Cejas ($45.000)</option>
+          </select>
         </div>
 
-        <div class="form-group">
-          <label for="telefonoCliente">Teléfono (WhatsApp):</label>
-          <input type="tel" id="telefonoCliente" placeholder="Ej: 3001234567" required>
+        <div class="form-row">
+          <div class="form-step">
+            <label for="nombreCliente"><i class="fa-solid fa-user"></i> Tu Nombre:</label>
+            <input type="text" id="nombreCliente" placeholder="Ej: María Pérez" required>
+          </div>
+          <div class="form-step">
+            <label for="telefonoCliente"><i class="fa-brands fa-whatsapp"></i> WhatsApp:</label>
+            <input type="tel" id="telefonoCliente" placeholder="Ej: 3194331506" required>
+          </div>
         </div>
 
-        <button type="submit" id="btnConfirmar" class="btn-submit">Confirmar Cita por WhatsApp</button>
+        <button type="submit" id="btnConfirmar" class="btn-submit">
+          <i class="fa-brands fa-whatsapp"></i> Confirmar Cita por WhatsApp
+        </button>
       </form>
     </section>
   </main>
 
   <footer>
-    <p>&copy; Always Beautiful - Todos los derechos reservados</p>
-    <a href="admin.html" style="color: #bbb; font-size: 0.8rem;">Acceso Administrador</a>
+    <p>&copy; 2026 Always Beautiful | Todos los derechos reservados</p>
+    <a href="admin.html" class="admin-link"><i class="fa-solid fa-lock"></i> Panel Administradora</a>
   </footer>
 
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
